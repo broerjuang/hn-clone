@@ -2,12 +2,22 @@
 
 import {makeExecutableSchema} from 'graphql-tools';
 
-let typeDefs = `
+import resolvers from './resolvers';
+
+const typeDefs = `
   type Link {
     id: ID!
     url: String!
     description: String!
   }
+
+  type Mutation {
+    crateateLink(url: String!, description: String!): Link
+  }
+
+  type Query {
+    allLinks: [Link!]!
+  }
 `;
 
-export default makeExecutableSchema({typeDefs});
+export default makeExecutableSchema({typeDefs, resolvers});
