@@ -5,4 +5,5 @@ import type {Mongo} from './Mongo-type';
 export type Context = {
   mongo: Mongo;
   user: User;
+  dataLoaders: Object;
 };

@@ -8,7 +8,7 @@ const MONGO_URL =
 async function connector() {
   let db = await MongoClient.connect(MONGO_URL);
   let logCount = 0;
-  Logger.setCurrentLogger((msg, state) => {
+  Logger.setCurrentLogger((msg) => {
     console.log(`MONGO DB REQUEST ${++logCount}: ${msg}`);
   });
   Logger.setLevel(`debug`);

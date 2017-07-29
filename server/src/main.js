@@ -7,6 +7,7 @@ import {graphqlExpress, graphiqlExpress} from 'apollo-server-express';
 import connect from './mongo-connector';
 import schema from './schema/schema.js';
 import authentication from './authentication';
+import buildDataLoader from './dataLoaders.js';
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,7 +22,11 @@ async function startServer() {
     req.headers.Authorization = 'bearer token-admin@gmail.com';
     let user = await authentication(req, mongo.Users);
     return {
-      context: {mongo, user},
+      context: {
+        dataLoaders: buildDataLoader(mongo),
+        mongo,
+        user,
+      },
       schema,
     };
   };

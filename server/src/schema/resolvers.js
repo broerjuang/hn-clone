@@ -37,9 +37,12 @@ let resolvers = {
   Link: {
     id: (root: RootLink) => root._id || root.id,
     postedBy: async(root: RootLink, data: Object, context: Context) => {
+      let {userLoader} = context.dataLoaders;
       let {postedById} = root;
-      let {Users} = context.mongo;
-      return await Users.findOne({_id: postedById});
+      // Use dataloaders instead
+      return await userLoader.load(postedById);
+      // let {Users} = context.mongo;
+      // return await Users.findOne({_id: postedById});
     },
     votes: async(root: RootLink, data: Object, context: Context) => {
       let {_id} = root;
@@ -59,8 +62,10 @@ let resolvers = {
     id: (root: RootVotes) => root._id || root.id,
     user: async(root: RootVotes, data: Object, context: Context) => {
       let {userId} = root;
-      let {Users} = context.mongo;
-      return await Users.findOne({_id: userId});
+      let {userLoader} = context.dataLoaders;
+      return await userLoader.load(userId);
+      // let {Users} = context.mongo;
+      // return await Users.findOne({_id: userId});
     },
     link: async(root: RootVotes, data: Object, context: Context) => {
       let {linkId} = root;
