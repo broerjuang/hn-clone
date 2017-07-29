@@ -5,6 +5,7 @@
   "description": "server",
   "main": "lib/main.js",
   "scripts": {
+    "start": "nodemon --exec babel-node src/main.js",
     "build": "babel src --ignore \"_*\" --out-dir lib",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "flow",
