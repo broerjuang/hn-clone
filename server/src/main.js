@@ -4,14 +4,23 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {graphqlExpress, graphiqlExpress} from 'apollo-server-express';
 
+import connect from './mongo-connector';
 import schema from './schema/schema.js';
 
 const PORT = process.env.PORT || 3000;
 
-function startServer() {
+async function startServer() {
+  let mongo = await connect();
   let app = express();
 
-  app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
+  app.use(
+    '/graphql',
+    bodyParser.json(),
+    graphqlExpress({
+      context: {mongo},
+      schema,
+    })
+  );
 
   app.use(
     '/graphiql',

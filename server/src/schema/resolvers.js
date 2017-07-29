@@ -13,8 +13,15 @@ const links = [
   },
 ];
 
-function allLinks() {
-  return links;
+type Context = {
+  mongo: {
+    Links: any;
+  };
+};
+
+async function allLinks(root: any, data: {}, context: Context) {
+  let {Links} = context.mongo;
+  return await Links.find({}).toArray();
 }
 
 type CrateLinkProps = {
@@ -22,14 +29,13 @@ type CrateLinkProps = {
   description: string;
 };
 
-function crateateLink(_: any, data: CrateLinkProps) {
-  let newId = links.length + 1;
-  let newLink = {
-    id: newId,
+async function crateateLink(root: any, data: CrateLinkProps, context: Context) {
+  let {Links} = context.mongo;
+  let response = await Links.insert(data);
+  return {
+    id: response.insertedIds[0],
     ...data,
   };
-  links.push(newLink);
-  return newLink;
 }
 
 let resolvers = {
@@ -38,6 +44,9 @@ let resolvers = {
   },
   Mutation: {
     crateateLink,
+  },
+  Link: {
+    id: (root: any) => root._id || root.id,
   },
 };
 
