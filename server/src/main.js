@@ -14,7 +14,7 @@ async function startServer() {
   let mongo = await connect();
   let app = express();
 
-  let authOptions = async(req, res: Response) => {
+  let authOptions = async(req) => {
     let user = await authentication(req, mongo.Users);
     return {
       context: {mongo, user},

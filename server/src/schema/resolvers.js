@@ -1,76 +1,14 @@
 // @flow
+import {allUsers, createUser, signinUser} from './controllers/users';
+import {allLinks, crateateLink} from './controllers/links';
 
-type Context = {
-  mongo: {
-    Links: any;
-    Users: any;
-  };
+import type {Context} from './types/Context-type';
+
+type Root = {
+  _id: string;
+  id?: string;
+  postedById: string;
 };
-
-async function allLinks(root: any, data: {}, context: Context) {
-  let {Links} = context.mongo;
-  return await Links.find({}).toArray();
-}
-
-type CrateLinkProps = {
-  url: string;
-  description: string;
-};
-
-async function crateateLink(root: any, data: CrateLinkProps, context: Context) {
-  let {Links} = context.mongo;
-  let response = await Links.insert(data);
-  return {
-    id: response.insertedIds[0],
-    ...data,
-  };
-}
-
-type CreateUserProps = {
-  name: string;
-  authProvider: AuthProvider;
-};
-
-type AuthProvider = {
-  email: {
-    email: string;
-    password: string;
-  };
-};
-
-// Resolvers for users
-
-async function createUser(root: any, data: CreateUserProps, context: Context) {
-  let newUser = {
-    name: data.name,
-    email: data.authProvider.email.email,
-    password: data.authProvider.email.password,
-  };
-  let {Users} = context.mongo;
-  let response = await Users.insert(newUser);
-  return {
-    id: response.insertedIds[0],
-    ...newUser,
-  };
-}
-
-async function allUsers(root: any, data: {}, context: Context) {
-  let {Users} = context.mongo;
-  let users = await Users.find({}).toArray();
-  return users;
-}
-
-async function signinUser(root: any, data: AuthProvider, context: Context) {
-  let {Users} = context.mongo;
-  let {email, password} = data.email;
-  let user = await Users.findOne({email: email});
-  if (password === user.password) {
-    return {
-      token: `token-${user.email}`,
-      user,
-    };
-  }
-}
 
 let resolvers = {
   Query: {
@@ -83,7 +21,12 @@ let resolvers = {
     signinUser,
   },
   Link: {
-    id: (root: any) => root._id || root.id,
+    id: (root: Root) => root._id || root.id,
+    postedBy: async(root: Root, data: Object, context: Context) => {
+      let {postedById} = root;
+      let {Users} = context.mongo.Users;
+      return await Users.findOne({_id: postedById});
+    },
   },
   User: {
     id: (root: any) => root._id || root.id,
