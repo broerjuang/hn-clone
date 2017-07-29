@@ -11,12 +11,35 @@ const typeDefs = `
     description: String!
   }
 
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  input AuthProviderSignupData {
+    email: AUTH_PROVIDER_EMAIL
+  }
+
+  input AUTH_PROVIDER_EMAIL {
+    email: String!
+    password: String!
+  }
+
+  type SigninPayload {
+    token: String
+    user: User
+  }
+
   type Mutation {
     crateateLink(url: String!, description: String!): Link
+    createUser(name: String!, authProvider: AuthProviderSignupData!): User
+    signinUser(email: AUTH_PROVIDER_EMAIL): SigninPayload!
   }
 
   type Query {
     allLinks: [Link!]!
+    allUsers: [User!]!
   }
 `;
 
