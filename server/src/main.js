@@ -14,19 +14,24 @@ async function startServer() {
   let mongo = await connect();
   let app = express();
 
-  let authOptions = async(req) => {
+  let buildOptions = async(req) => {
+    // A kinda dirty solution because passHeader using applloGraphQl,
+    // did not modify the header
+    // TODO: next it will use real request from the client and sending the auth
+    req.headers.Authorization = 'bearer token-admin@gmail.com';
     let user = await authentication(req, mongo.Users);
     return {
       context: {mongo, user},
       schema,
     };
   };
-  app.use('/graphql', bodyParser.json(), graphqlExpress(authOptions));
+  app.use('/graphql', bodyParser.json(), graphqlExpress(buildOptions));
 
   app.use(
     '/graphiql',
     graphiqlExpress({
       endpointURL: '/graphql',
+      // passHeader: `'Authorization: 'bearer token-admin@gmail.com'`,
     })
   );
 

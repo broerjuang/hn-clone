@@ -23,7 +23,7 @@ type CrateLinkProps = {
   description: string;
 };
 
-async function crateateLink(root: any, data: CrateLinkProps, context: Context) {
+async function createLink(root: any, data: CrateLinkProps, context: Context) {
   let {Links} = context.mongo;
   let newLink = {
     postedById: context.user && context.user._id,
@@ -32,8 +32,8 @@ async function crateateLink(root: any, data: CrateLinkProps, context: Context) {
   let response = await Links.insert(newLink);
   return {
     id: response.insertedIds[0],
-    ...data,
+    ...newLink,
   };
 }
 
-export {allLinks, crateateLink};
+export {allLinks, createLink};

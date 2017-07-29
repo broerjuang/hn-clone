@@ -4,16 +4,18 @@
 
 const HEADER_REGEX = /bearer token-(.*)$/;
 
-type Authorization = {
+type AuthorizationProps = {
   headers: {
-    authorization: string;
+    Authorization: string;
   };
 };
 
-async function authenticate(auth: Authorization, Users: any) {
-  let {authorization} = auth.headers;
-  let email = authorization && HEADER_REGEX.exec(authorization);
-  return email && (await Users.findOne({email}));
+
+async function authenticate(auth: AuthorizationProps, Users: any) {
+  let {Authorization} = auth.headers;
+  let email = Authorization && HEADER_REGEX.exec(Authorization)[1];
+  let user = await Users.findOne({email: email});
+  return email && user;
 }
 
 export default authenticate;
