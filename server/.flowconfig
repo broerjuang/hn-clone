@@ -11,3 +11,4 @@ esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 suppress_type=$FlowIssue
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
